@@ -3,6 +3,8 @@ FROM node:11.6.0-alpine
 ARG CHANNEL_ACCESS_TOKEN
 ARG CHANNEL_SECRET
 
+RUN apk --update add imagemagick
+
 WORKDIR /var/opt/mybot
 ADD mybot/index.js .
 ADD mybot/package-lock.json .
