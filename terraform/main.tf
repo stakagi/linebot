@@ -35,7 +35,9 @@ resource "azurerm_app_service" "default" {
     CHANNEL_ACCESS_TOKEN                = "${var.channel_access_token}"
     CHANNEL_SECRET                      = "${var.channel_secret}"
     BASE_URL                            = "https://${azurerm_resource_group.default.name}-appservice.azurewebsites.net"
-    WEBSITES_ENABLE_APP_SERVICE_STORAGE = false
+    WEBSITES_ENABLE_APP_SERVICE_STORAGE = "false"
+    DOCKER_ENABLE_CI                    = "true"
+    DOCKER_REGISTRY_SERVER_URL          = "https://index.docker.io"
   }
 
   site_config {
