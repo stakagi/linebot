@@ -4,10 +4,10 @@ ARG CHANNEL_ACCESS_TOKEN
 ARG CHANNEL_SECRET
 
 WORKDIR /var/opt/mybot
-ADD index.js .
-ADD package-lock.json .
-ADD package.json .
-ADD static ./static
+ADD ./index.js .
+ADD ./package-lock.json .
+ADD ./package.json .
+ADD ./static ./static
 RUN npm install
 
 ENV CHANNEL_ACCESS_TOKEN ${CHANNEL_ACCESS_TOKEN}
