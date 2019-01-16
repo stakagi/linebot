@@ -1,0 +1,17 @@
+{
+  "name": "mybot",
+  "version": "0.0.1",
+  "description": "desc",
+  "main": "index.js",
+  "scripts": {
+    "start": "node ."
+  },
+  "dependencies": {},
+  "devDependencies": {
+    "@line/bot-sdk": "^5.2.0",
+    "child-process": "^1.0.2",
+    "express": "^4.16.4",
+    "fs": "0.0.1-security",
+    "path": "^0.12.7"
+  }
+}
