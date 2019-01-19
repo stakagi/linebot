@@ -342,23 +342,26 @@ function handleLocation(message, replyToken) {
     longitude: 139.767125
   };
 
-  // √((緯度1 – 緯度2) / 0.0111)^2 + ( (経度1 – 経度2) / 0.0091)^2
-  var dist =
-    Math.sqrt(Math.pow((target.latitude - message.latitude) / 0.0111), 2) +
-    Math.sqrt(Math.pow((target.longitude - message.longitude) / 0.0111), 2);
+  // 目的地からの距離を計算
+  var dist = Math.sqrt(
+    Math.pow((target.latitude - message.latitude) / 0.0111, 2) +
+    Math.pow((target.longitude - message.longitude) / 0.0091, 2)
+  );
 
   if (dist < 1.0) {
+    // 距離が1km以内だったら目的地に居るものとして扱う
     return handleAtDestination(message, dist, replyToken);
   } else {
+    // 目的地以外
     return handleAtOther(message, dist, replyToken);
   }
 }
 
-function handleAtDestination(message, dist, replyToken){
+function handleAtDestination(message, dist, replyToken) {
   return replyText(replyToken, `目的地（東京駅）にいます。目的地までの距離${dist}km`);
 }
 
-function handleAtOther(message, dist, replyToken){
+function handleAtOther(message, dist, replyToken) {
   return replyText(replyToken, `目的地（東京駅）にいません。目的地までの距離${dist}km`);
 }
 
