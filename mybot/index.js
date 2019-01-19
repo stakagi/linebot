@@ -348,18 +348,18 @@ function handleLocation(message, replyToken) {
     Math.sqrt(Math.pow((target.longitude - message.longitude) / 0.0111), 2);
 
   if (dist < 1.0) {
-    return handleAtDestination(message, replyToken);
+    return handleAtDestination(message, dist, replyToken);
   } else {
-    return handleAtOther(message, replyToken);
+    return handleAtOther(message, dist, replyToken);
   }
 }
 
-function handleAtDestination(message,replyToken){
-  return replyText(replyToken, '目的地（東京駅）にいます');
+function handleAtDestination(message, dist, replyToken){
+  return replyText(replyToken, `目的地（東京駅）にいます。目的地までの距離${dist}km`);
 }
 
-function handleAtOther(message,replyToken){
-  return replyText(replyToken, '目的地（東京駅）にいません');
+function handleAtOther(message, dist, replyToken){
+  return replyText(replyToken, `目的地（東京駅）にいません。目的地までの距離${dist}km`);
 }
 
 function handleSticker(message, replyToken) {
