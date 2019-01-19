@@ -367,9 +367,9 @@ function handleAtDestination(message, dist, replyToken) {
   var money = logic.getMoneyAtLocation(message);
 
   async.waterfall([
-    function (callback) {
-      logic.getAddressFromLocation(message, function (results) {
-        callback(null, results[0]);
+    function (next) {
+      logic.getAddressFromLocation(message, function (result) {
+        next(null, result);
       });
     },
     function (result) {

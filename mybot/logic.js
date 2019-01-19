@@ -43,10 +43,13 @@ function getAddressFromLocation(location, callback) {
         latlng: [location.latitude, location.longitude]
     }, function (err, response) {
         if(err){
-            console.error(err);
+            console.log('error at reverseGeocode');
+            console.log(JSON.stringify(err));
+            console.log(err);
+            callback(error);
         }
-        callback(response.json.results);
-    });
+        callback(response.json.results[0]);
+    })
 }
 
 function getPrefCode(name) {
