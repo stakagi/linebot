@@ -7,6 +7,8 @@ variable "channel_access_token" {}
 variable "channel_secret" {}
 variable "api_key_yahoo" {}
 variable "api_key_resas" {}
+variable "api_key_google" {}
+
 
 resource "azurerm_resource_group" "default" {
   name     = "linebot"
@@ -38,6 +40,7 @@ resource "azurerm_app_service" "default" {
     CHANNEL_SECRET                      = "${var.channel_secret}"
     API_KEY_YAHOO                       = "${var.api_key_yahoo}"
     API_KEY_RESAS                       = "${var.api_key_resas}"
+    API_KEY_GOOGLE                      = "${var.api_key_google}"
     BASE_URL                            = "https://${azurerm_resource_group.default.name}-appservice.azurewebsites.net"
     WEBSITES_ENABLE_APP_SERVICE_STORAGE = "false"
     DOCKER_ENABLE_CI                    = "true"

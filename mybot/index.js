@@ -356,13 +356,15 @@ function handleLocation(message, replyToken) {
   }
 }
 
-function handleAtDestination(message, dist, replyToken) {
+async function handleAtDestination(message, dist, replyToken) {
   var money = logic.getMoneyAtLocation(message);
-  return replyText(replyToken, `目的地（東京駅）に到着しました。\\${money}獲得！`);
+  var address = await logic.getAddressFromLocation(message);
+
+  return replyText(replyToken, `目的地（東京駅）に到着しました。現在地は ${address} です。${money}円ゲット！`);
 }
 
 function handleAtOther(message, dist, replyToken) {
-  return replyText(replyToken, `目的地（東京駅）にいません。目的地までの距離${dist}km`);
+  return replyText(replyToken, `目的地（東京駅）にいません。目的地までの距離は${dist}kmです。`);
 }
 
 function handleSticker(message, replyToken) {
