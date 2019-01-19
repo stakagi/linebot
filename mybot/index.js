@@ -375,7 +375,7 @@ function handleAtDestination(message, dist, replyToken) {
     function (array) {
       replyText(replyToken, [
         `目的地（東京駅）に到着しました。現在地の都道府県コードは ${array[0]} です。${money}円ゲット！`,
-        `${JSON.stringify(response)}`
+        `${JSON.stringify(array[1])}`
       ]);
     }
   ]);

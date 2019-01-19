@@ -49,7 +49,7 @@ function getPrefCodeFromLocation(location, callback) {
         }
 
         var addr = response.json.results[0].address_components;
-        var prefCode = getPrefCode(addr[addr.length - 2]);
+        var prefCode = getPrefCode(addr[addr.length - 2].long_name);
 
         callback(prefCode, response);
     });
