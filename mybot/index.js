@@ -373,7 +373,7 @@ function handleAtDestination(message, dist, replyToken) {
       });
     },
     function (result) {
-      replyText(replyToken, `目的地（東京駅）に到着しました。現在地は ${result} です。${money}円ゲット！`);
+      replyText(replyToken, `目的地（東京駅）に到着しました。現在地は ${JSON.stringify(result)} です。${money}円ゲット！`);
     }
   ]);
 }
