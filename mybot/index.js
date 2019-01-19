@@ -6,6 +6,7 @@ const fs = require('fs');
 const path = require('path');
 const cp = require('child_process');
 const async = require('async');
+const mongodb = require('mongodb');
 
 const logic = require('./logic');
 
@@ -20,6 +21,7 @@ const baseURL = process.env.BASE_URL;
 
 // create LINE SDK client
 const client = new line.Client(config);
+const MongoClient = mongodb.MongoClient;
 
 // create Express app
 // about Express itself: https://expressjs.com/
@@ -107,6 +109,8 @@ function handleText(message, replyToken, source) {
   const buttonsImageURL = `${baseURL}/static/buttons/1040.jpg`;
 
   switch (message.text) {
+    case 'checkin':
+      return replyText(replyToken, `目的地（東京駅）に到着しました。3000万円ゲット！`);
     case 'profile':
       if (source.userId) {
         return client.getProfile(source.userId)
@@ -365,21 +369,30 @@ function handleLocation(message, replyToken) {
 
 function handleAtDestination(message, dist, replyToken) {
   var money = logic.getMoneyAtLocation(message);
+  return replyText(replyToken, `目的地（東京駅）に到着しました。${money}円ゲット！`);
 
-  async.waterfall([
-    function (next) {
-      logic.getPrefCodeFromLocation(message, function (prefCode, response) {
-        next(null, [prefCode, response]);
-      });
-    },
-    function (array) {
-      replyText(replyToken, `目的地（東京駅）に到着しました。現在地の都道府県コードは ${JSON.stringify(array)} です。${money}円ゲット！`);
-    }
-  ]);
+  // async.waterfall([
+  //   function (next) {
+  //     MongoClient.connect('mongodb://localhost:27017/myDB', (err, db) => {
+  //       var collection = db.collection(message.userId);
+
+  //       // コレクションにドキュメントを挿入
+  //       collection.insertOne({
+  //         "price": money
+  //       }, (error, result) => {
+  //         db.close();
+  //         next(null);
+  //       });
+  //     });
+  //   },
+  //   function () {
+  //     replyText(replyToken, `目的地（東京駅）に到着しました。${money}円ゲット！`);
+  //   }
+  // ]);
 }
 
 function handleAtOther(message, dist, replyToken) {
-  return replyText(replyToken, `目的地（東京駅）にいません。目的地までの距離は${dist}kmです。`);
+  return replyText(replyToken, `次の目的地は東京駅です。目的地まであと${dist}km。`);
 }
 
 function handleSticker(message, replyToken) {
