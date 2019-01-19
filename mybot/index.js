@@ -165,21 +165,27 @@ function handleText(message, replyToken, source) {
             type: 'carousel',
             columns: [
               {
-                thumbnailImageUrl: buttonsImageURL,
-                title: 'hoge',
-                text: 'fuga',
+                thumbnailImageUrl: 'https://jp.sake-times.com/sake_system_jp/wp-content/uploads/2018/12/p_hoisassa.png',
+                title: 'お店 A',
+                text: '購入価格 1000万円',
                 actions: [
-                  { label: 'Go to line.me', type: 'uri', uri: 'https://line.me' },
-                  { label: 'Say hello1', type: 'postback', data: 'hello こんにちは' },
+                  { label: '購入', type: 'postback', data: 'buy'}
                 ],
               },
               {
-                thumbnailImageUrl: buttonsImageURL,
-                title: 'hoge',
-                text: 'fuga',
+                thumbnailImageUrl: 'https://jp.sake-times.com/sake_system_jp/wp-content/uploads/2018/12/p_hoisassa.png',
+                title: '観光スポット B',
+                text: '購入価格 2000万円',
                 actions: [
-                  { label: '言 hello2', type: 'postback', data: 'hello こんにちは', text: 'hello こんにちは' },
-                  { label: 'Say message', type: 'message', text: 'Rice=米' },
+                  { label: '購入', type: 'postback', data: 'buy'}
+                ],
+              },
+              {
+                thumbnailImageUrl: 'https://jp.sake-times.com/sake_system_jp/wp-content/uploads/2018/12/p_hoisassa.png',
+                title: 'ビル C',
+                text: '購入価格 1億円',
+                actions: [
+                  { label: '購入', type: 'postback', data: 'buy'}
                 ],
               },
             ],
