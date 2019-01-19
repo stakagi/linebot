@@ -369,7 +369,7 @@ function handleAtDestination(message, dist, replyToken) {
   async.waterfall([
     function (callback) {
       logic.getAddressFromLocation(message, function (results) {
-        callback(results[0]);
+        callback(null, results[0]);
       });
     },
     function (address) {
