@@ -337,16 +337,29 @@ function downloadContent(messageId, downloadPath) {
 }
 
 function handleLocation(message, replyToken) {
-  return client.replyMessage(
-    replyToken,
-    {
-      type: 'location',
-      title: message.title,
-      address: message.address,
-      latitude: message.latitude,
-      longitude: message.longitude,
-    }
-  );
+  var target = {
+    latitude: 35.681236,
+    longitude: 139.767125
+  };
+
+  // √((緯度1 – 緯度2) / 0.0111)^2 + ( (経度1 – 経度2) / 0.0091)^2
+  var dist =
+    Math.sqrt(Math.pow((target.latitude - message.latitude) / 0.0111), 2) +
+    Math.sqrt(Math.pow((target.longitude - message.longitude) / 0.0111), 2);
+
+  if (dist < 1.0) {
+    return handleAtDestination(message, replyToken);
+  } else {
+    return handleAtOther(message, replyToken);
+  }
+}
+
+function handleAtDestination(message,replyToken){
+  return replyText(replyToken, '目的地（東京駅）にいます');
+}
+
+function handleAtOther(message,replyToken){
+  return replyText(replyToken, '目的地（東京駅）にいません');
 }
 
 function handleSticker(message, replyToken) {
