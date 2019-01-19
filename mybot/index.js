@@ -91,12 +91,15 @@ function handleEvent(event) {
       return console.log(`Left: ${JSON.stringify(event)}`);
 
     case 'postback':
-      let data = event.postback.data;
-      if (data === 'DATE' || data === 'TIME' || data === 'DATETIME') {
-        data += `(${JSON.stringify(event.postback.params)})`;
+      if (event.postback.data === "buy_1") {
+        return replyText(event.replyToken, `ほいさっさ を 3000万円 で購入しました`);
+      } else if (event.postback.data === "buy_2") {
+        return replyText(event.replyToken, `チーズとワインのお店 Den 日比谷 を 2500万円 で購入しました`);
+      } else if (event.postback.data === "buy_3") {
+        return replyText(event.replyToken, `バインセオサイゴン 有楽町店 を 2800万円 で購入しました`);
+      }else{
+        return replyText(event.replyToken, event.postback.data);
       }
-      return replyText(event.replyToken, `Got postback: ${data}`);
-
     case 'beacon':
       return replyText(event.replyToken, `Got beacon: ${event.beacon.hwid}`);
 
@@ -111,6 +114,43 @@ function handleText(message, replyToken, source) {
   switch (message.text) {
     case 'checkin':
       return replyText(replyToken, `目的地（東京駅）に到着しました。3000万円ゲット！`);
+    case 'buy':
+      return client.replyMessage(
+        replyToken,
+        {
+          type: 'template',
+          altText: 'Carousel alt text',
+          template: {
+            type: 'carousel',
+            columns: [
+              {
+                thumbnailImageUrl: 'https://jp.sake-times.com/sake_system_jp/wp-content/uploads/2018/12/p_hoisassa.png',
+                title: 'ほいさっさ',
+                text: '購入価格 3000万円',
+                actions: [
+                  { label: '購入', type: 'postback', data: 'buy_1' }
+                ],
+              },
+              {
+                thumbnailImageUrl: 'https://cheese-wine-den.com/wp-content/themes/tonoka/images/location_00.jpg',
+                title: 'チーズとワインのお店 Den 日比谷',
+                text: '購入価格 2500万円',
+                actions: [
+                  { label: '購入', type: 'postback', data: 'buy_2' }
+                ],
+              },
+              {
+                thumbnailImageUrl: 'https://tblg.k-img.com/restaurant/images/Rvw/51312/51312835.jpg',
+                title: 'バインセオサイゴン 有楽町店',
+                text: '購入価格 2800万円',
+                actions: [
+                  { label: '購入', type: 'postback', data: 'buy_3' }
+                ],
+              },
+            ],
+          },
+        }
+      );
     case 'profile':
       if (source.userId) {
         return client.getProfile(source.userId)
