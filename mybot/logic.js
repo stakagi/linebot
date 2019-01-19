@@ -56,18 +56,21 @@ function getMoneyAtLocation(location) {
     return 100;
 }
 
-function getAddressFromLocation(location, callback) {
-    var response = googleMapsClient.reverseGeocode({
-        latlng: [location.latitude, location.longitude]
+function getPrefCodeFromLocation(location, callback) {
+    googleMapsClient.reverseGeocode({
+        latlng: [location.latitude, location.longitude],
+        language: 'ja'
     }, function (err, response) {
-        if(err){
+        if (err) {
             console.log('error at reverseGeocode');
-            console.log(JSON.stringify(err));
             console.log(err);
-            callback(error);
         }
-        callback(response.json.results[0]);
-    })
+
+        // var addr = response.json.results[0].address_components;
+        // var prefCode = getPrefCode(addr[addr.length - 2].long_name);
+
+        callback(13, response);
+    });
 }
 
 function getPrefCode(name) {
@@ -341,4 +344,4 @@ function convertEkiDataToJSON (response) {
 exports.getCurrnetDestination = getCurrnetDestination;
 exports.getMoneyAtLocation = getMoneyAtLocation;
 
-exports.getAddressFromLocation = getAddressFromLocation;
+exports.getPrefCodeFromLocation = getPrefCodeFromLocation;
