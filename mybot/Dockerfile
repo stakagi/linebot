@@ -7,6 +7,7 @@ ARG CHANNEL_SECRET
 
 WORKDIR /var/opt/mybot
 ADD mybot/index.js .
+ADD mybot/logic.js .
 ADD mybot/package-lock.json .
 ADD mybot/package.json .
 ADD mybot/static ./static

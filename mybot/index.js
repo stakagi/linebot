@@ -6,6 +6,8 @@ const fs = require('fs');
 const path = require('path');
 const cp = require('child_process');
 
+const logic = require('./logic');
+
 // create LINE SDK config from env variables
 const config = {
   channelAccessToken: process.env.CHANNEL_ACCESS_TOKEN,
@@ -337,10 +339,7 @@ function downloadContent(messageId, downloadPath) {
 }
 
 function handleLocation(message, replyToken) {
-  var target = {
-    latitude: 35.681236,
-    longitude: 139.767125
-  };
+  var target = logic.getCurrnetDestination(message.userId);
 
   // 目的地からの距離を計算
   var dist = Math.sqrt(
@@ -348,8 +347,8 @@ function handleLocation(message, replyToken) {
     Math.pow((target.longitude - message.longitude) / 0.0091, 2)
   );
 
-  if (dist < 1.0) {
-    // 距離が1km以内だったら目的地に居るものとして扱う
+  if (dist < 0.5) {
+    // 距離が0.5km以内だったら目的地に居るものとして扱う
     return handleAtDestination(message, dist, replyToken);
   } else {
     // 目的地以外
@@ -358,7 +357,8 @@ function handleLocation(message, replyToken) {
 }
 
 function handleAtDestination(message, dist, replyToken) {
-  return replyText(replyToken, `目的地（東京駅）にいます。目的地までの距離${dist}km`);
+  var money = logic.getMoneyAtLocation(message);
+  return replyText(replyToken, `目的地（東京駅）に到着しました。\\${money}獲得！`);
 }
 
 function handleAtOther(message, dist, replyToken) {
