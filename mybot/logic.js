@@ -3,17 +3,35 @@ const googleMapsClient = require('@google/maps').createClient({
     key: process.env.API_KEY_GOOGLE
 });
 
+const axios = require('axios');
+ 
 const appConfig = {
     api: {
-        yahoo: {
-            'X-API-KEY': process.env.API_KEY_YAHOO,
-        },
         resas: {
-            'appid': process.env.API_KEY_RESAS
+            'X-API-KEY': process.env.API_KEY_RESAS
+        },
+        yahoo: {
+            'appid': process.env.API_KEY_YAHOO,
         }
     },
     rail: {
         lineCd: '11301'   //東海道線
+    }
+}
+
+const apiParameter = {
+    common: {
+        headers: {
+            'Content-Type': 'application/json;charset=UTF-8',
+            'Access-Control-Allow-Origin': '*'
+        }
+    },
+    resas: {
+        headers: {
+            'X-API-KEY': api.yahoo.appid,
+            'Content-Type': 'application/json;charset=UTF-8',
+            'Access-Control-Allow-Origin': '*'
+        }
     }
 }
 
@@ -245,6 +263,73 @@ function getPrefCode(name) {
 
     return prefData.length === 1 ? prefData[0].prefCode : undefined
 }
+
+//API 駅一覧取得
+function getStationList(lineCd) {
+    axios
+      .get('http://www.ekidata.jp/api/l/' + lineCd + '.json', apiParameter.common)
+      .then(response => {
+        let jsonData = convertEkiDataToJSON(response)
+        console.log(jsonData)
+        console.log(response.status) // 200
+        return jsonData
+    })
+}
+
+//API 駅情報取得
+function getStationInfo(stationCd) {
+    axios
+      .get('http://www.ekidata.jp/api/s/' + stationCd + '.json', apiParameter.common)
+      .then(response => {
+        let jsonData = convertEkiDataToJSON(response)
+        console.log(jsonData)
+        console.log(response.status) // 200
+        return jsonData
+    })
+}
+
+//API RESAS情報取得（あとで変更）
+  function getRESAS() {
+    axios
+      .get(
+        // "https://opendata.resas-portal.go.jp/api/v1/prefectures",
+        'https://opendata.resas-portal.go.jp/api/v1/cities?prefCode=' + '13',
+        this.config2
+      )
+      .then(response => {
+        console.log(response.data) // mockData
+        console.log(response.status) // 200
+        this.resultData = response.data
+    })
+}
+
+//API ランドマーク取得
+function getLandmarks (lat, lon) {
+    axios
+      .get(
+        'https://map.yahooapis.jp/placeinfo/V1/get?lat=' +
+          lat +
+          '&lon=' +
+          lon +
+          '&appid=' + appConfig.yahoo.appid,
+        apiParameter.common
+      )
+      .then(response => {
+        console.log(response.data) // mockData
+        console.log(response.status) // 200
+        return response.data
+      })
+}
+
+function convertEkiDataToJSON (response) {
+    console.log(response)
+    return JSON.parse(
+      response.data.split(/\n/)[2].replace(/^xml.data = /g, '')
+    )
+}
+
+
+
 
 // exports functions
 exports.getCurrnetDestination = getCurrnetDestination;
