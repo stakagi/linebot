@@ -33,3 +33,7 @@ function getMoneyAtLocation(location){
     // TODO: RESASのAPIとかを使ってちゃんと計算する
     return 100;
 }
+
+// exports functions
+exports.getCurrnetDestination = getCurrnetDestination;
+exports.getMoneyAtLocation = getMoneyAtLocation;
