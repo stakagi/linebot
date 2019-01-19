@@ -5,6 +5,7 @@ const express = require('express');
 const fs = require('fs');
 const path = require('path');
 const cp = require('child_process');
+const async = require('async');
 
 const logic = require('./logic');
 
@@ -169,7 +170,7 @@ function handleText(message, replyToken, source) {
                 title: 'お店 A',
                 text: '購入価格 1000万円',
                 actions: [
-                  { label: '購入', type: 'postback', data: 'buy'}
+                  { label: '購入', type: 'postback', data: 'buy' }
                 ],
               },
               {
@@ -177,7 +178,7 @@ function handleText(message, replyToken, source) {
                 title: '観光スポット B',
                 text: '購入価格 2000万円',
                 actions: [
-                  { label: '購入', type: 'postback', data: 'buy'}
+                  { label: '購入', type: 'postback', data: 'buy' }
                 ],
               },
               {
@@ -185,7 +186,7 @@ function handleText(message, replyToken, source) {
                 title: 'ビル C',
                 text: '購入価格 1億円',
                 actions: [
-                  { label: '購入', type: 'postback', data: 'buy'}
+                  { label: '購入', type: 'postback', data: 'buy' }
                 ],
               },
             ],
@@ -362,11 +363,19 @@ function handleLocation(message, replyToken) {
   }
 }
 
-async function handleAtDestination(message, dist, replyToken) {
+function handleAtDestination(message, dist, replyToken) {
   var money = logic.getMoneyAtLocation(message);
-  var address = await logic.getAddressFromLocation(message);
 
-  return replyText(replyToken, `目的地（東京駅）に到着しました。現在地は ${address} です。${money}円ゲット！`);
+  async.waterfall([
+    function (callback) {
+      logic.getAddressFromLocation(message, function (results) {
+        callback(results[0]);
+      });
+    },
+    function (address) {
+      replyText(replyToken, `目的地（東京駅）に到着しました。現在地は ${address} です。${money}円ゲット！`);
+    }
+  ]);
 }
 
 function handleAtOther(message, dist, replyToken) {

@@ -38,12 +38,14 @@ function getMoneyAtLocation(location) {
     return 100;
 }
 
-async function getAddressFromLocation(location) {
-    var response = await googleMapsClient.reverseGeocode({
+function getAddressFromLocation(location, callback) {
+    var response = googleMapsClient.reverseGeocode({
         latlng: [location.latitude, location.longitude]
+    }, function (err, response) {
+        if (!err) {
+            callback(response.json.results);
+        }
     });
-
-    return response.json.results[0];
 }
 
 function getPrefCode(name) {
