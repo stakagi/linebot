@@ -39,7 +39,7 @@ function getMoneyAtLocation(location) {
 }
 
 function getPrefCodeFromLocation(location, callback) {
-    var response = googleMapsClient.reverseGeocode({
+    googleMapsClient.reverseGeocode({
         latlng: [location.latitude, location.longitude],
         language: 'ja'
     }, function (err, response) {
@@ -51,8 +51,8 @@ function getPrefCodeFromLocation(location, callback) {
         var addr = response.json.results[0].address_components;
         var prefCode = getPrefCode(addr[addr.length - 2]);
 
-        callback(prefCode);
-    })
+        callback(prefCode, response);
+    });
 }
 
 function getPrefCode(name) {

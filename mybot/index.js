@@ -368,12 +368,15 @@ function handleAtDestination(message, dist, replyToken) {
 
   async.waterfall([
     function (next) {
-      logic.getPrefCodeFromLocation(message, function (prefCode) {
-        next(null, prefCode);
+      logic.getPrefCodeFromLocation(message, function (prefCode, response) {
+        next(null, [prefCode, response]);
       });
     },
-    function (prefCode) {
-      replyText(replyToken, `目的地（東京駅）に到着しました。現在地の都道府県コードは ${prefCode} です。${money}円ゲット！`);
+    function (array) {
+      replyText(replyToken, [
+        `目的地（東京駅）に到着しました。現在地の都道府県コードは ${array[0]} です。${money}円ゲット！`,
+        `${JSON.stringify(response)}`
+      ]);
     }
   ]);
 }
