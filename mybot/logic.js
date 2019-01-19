@@ -60,9 +60,10 @@ function getAddressFromLocation(location, callback) {
     var response = googleMapsClient.reverseGeocode({
         latlng: [location.latitude, location.longitude]
     }, function (err, response) {
-        if (!err) {
-            callback(response.json.results);
+        if(err){
+            console.error(err);
         }
+        callback(response.json.results);
     });
 }
 
