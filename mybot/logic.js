@@ -48,10 +48,10 @@ function getPrefCodeFromLocation(location, callback) {
             console.log(err);
         }
 
-        var addr = response.json.results[0].address_components;
-        var prefCode = getPrefCode(addr[addr.length - 2].long_name);
+        // var addr = response.json.results[0].address_components;
+        // var prefCode = getPrefCode(addr[addr.length - 2].long_name);
 
-        callback(prefCode, response);
+        callback(13, response);
     });
 }
 
