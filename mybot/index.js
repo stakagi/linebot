@@ -6,6 +6,7 @@ const fs = require('fs');
 const path = require('path');
 const cp = require('child_process');
 const async = require('async');
+const mongodb = require('mongodb');
 
 const logic = require('./logic');
 
@@ -20,6 +21,7 @@ const baseURL = process.env.BASE_URL;
 
 // create LINE SDK client
 const client = new line.Client(config);
+const MongoClient = mongodb.MongoClient;
 
 // create Express app
 // about Express itself: https://expressjs.com/
@@ -89,12 +91,15 @@ function handleEvent(event) {
       return console.log(`Left: ${JSON.stringify(event)}`);
 
     case 'postback':
-      let data = event.postback.data;
-      if (data === 'DATE' || data === 'TIME' || data === 'DATETIME') {
-        data += `(${JSON.stringify(event.postback.params)})`;
+      if (event.postback.data === "buy_1") {
+        return replyText(event.replyToken, `ほいさっさ を 3000万円 で購入しました`);
+      } else if (event.postback.data === "buy_2") {
+        return replyText(event.replyToken, `チーズとワインのお店 Den 日比谷 を 2500万円 で購入しました`);
+      } else if (event.postback.data === "buy_3") {
+        return replyText(event.replyToken, `バインセオサイゴン 有楽町店 を 2800万円 で購入しました`);
+      }else{
+        return replyText(event.replyToken, event.postback.data);
       }
-      return replyText(event.replyToken, `Got postback: ${data}`);
-
     case 'beacon':
       return replyText(event.replyToken, `Got beacon: ${event.beacon.hwid}`);
 
@@ -107,6 +112,45 @@ function handleText(message, replyToken, source) {
   const buttonsImageURL = `${baseURL}/static/buttons/1040.jpg`;
 
   switch (message.text) {
+    case 'checkin':
+      return replyText(replyToken, `目的地（東京駅）に到着しました。3000万円ゲット！`);
+    case 'buy':
+      return client.replyMessage(
+        replyToken,
+        {
+          type: 'template',
+          altText: 'Carousel alt text',
+          template: {
+            type: 'carousel',
+            columns: [
+              {
+                thumbnailImageUrl: 'https://jp.sake-times.com/sake_system_jp/wp-content/uploads/2018/12/p_hoisassa.png',
+                title: 'ほいさっさ',
+                text: '購入価格 3000万円',
+                actions: [
+                  { label: '購入', type: 'postback', data: 'buy_1' }
+                ],
+              },
+              {
+                thumbnailImageUrl: 'https://cheese-wine-den.com/wp-content/themes/tonoka/images/location_00.jpg',
+                title: 'チーズとワインのお店 Den 日比谷',
+                text: '購入価格 2500万円',
+                actions: [
+                  { label: '購入', type: 'postback', data: 'buy_2' }
+                ],
+              },
+              {
+                thumbnailImageUrl: 'https://tblg.k-img.com/restaurant/images/Rvw/51312/51312835.jpg',
+                title: 'バインセオサイゴン 有楽町店',
+                text: '購入価格 2800万円',
+                actions: [
+                  { label: '購入', type: 'postback', data: 'buy_3' }
+                ],
+              },
+            ],
+          },
+        }
+      );
     case 'profile':
       if (source.userId) {
         return client.getProfile(source.userId)
@@ -365,21 +409,30 @@ function handleLocation(message, replyToken) {
 
 function handleAtDestination(message, dist, replyToken) {
   var money = logic.getMoneyAtLocation(message);
+  return replyText(replyToken, `目的地（東京駅）に到着しました。${money}円ゲット！`);
 
-  async.waterfall([
-    function (next) {
-      logic.getPrefCodeFromLocation(message, function (prefCode, response) {
-        next(null, [prefCode, response]);
-      });
-    },
-    function (array) {
-      replyText(replyToken, `目的地（東京駅）に到着しました。現在地の都道府県コードは ${JSON.stringify(array)} です。${money}円ゲット！`);
-    }
-  ]);
+  // async.waterfall([
+  //   function (next) {
+  //     MongoClient.connect('mongodb://localhost:27017/myDB', (err, db) => {
+  //       var collection = db.collection(message.userId);
+
+  //       // コレクションにドキュメントを挿入
+  //       collection.insertOne({
+  //         "price": money
+  //       }, (error, result) => {
+  //         db.close();
+  //         next(null);
+  //       });
+  //     });
+  //   },
+  //   function () {
+  //     replyText(replyToken, `目的地（東京駅）に到着しました。${money}円ゲット！`);
+  //   }
+  // ]);
 }
 
 function handleAtOther(message, dist, replyToken) {
-  return replyText(replyToken, `目的地（東京駅）にいません。目的地までの距離は${dist}kmです。`);
+  return replyText(replyToken, `次の目的地は東京駅です。目的地まであと${dist}km。`);
 }
 
 function handleSticker(message, replyToken) {
